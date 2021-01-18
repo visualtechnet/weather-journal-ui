@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Journal</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Weather Journal App</h1>
+        <form onsubmit="saveJournal()">
+            <label for="zipCode">Enter ZipCode<br />
+                <input name="zipCode" type="text" class="form-control">
+            </label><br />
+            <label for="howareyou">How are you feeling today?<br />
+                <textarea name="howareyou" class="form-control" rows="10" cols="5"></textarea>
+            </label><br />
+            <button type="submit" class="btn btn-secondary">SAVE</button>
+        </form>
+        <hr>
+        <ul id="journalEntries">
+        </ul>
+        <p> Using Open Weather API on this Website<br /> https://openweathermap.org/api </p>
+        <footer>&copy;Copyright 2021. Mark Guerrero. All Rights Reserved.</footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous"></script>
+    <script src="js/app.js" />
+</body>
+
+</html>
