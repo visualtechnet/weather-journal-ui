@@ -1,6 +1,6 @@
 const weatherApiUrl = 'https://zen-wiles-e17b2d.netlify.app/.netlify/functions/api'
 const apiKey = '153da925919bca743649e4d361c0ed8e'
-const weatherIcon = 'http://openweathermap.org/img/wn/01d@2x.png'
+const weatherIcon = 'https://openweathermap.org/img/wn/01d@2x.png'
 const journalEntryStore = window.localStorage
 const JOURNAL_ENTRIES = 'JOURNAL_ENTRIES'
 
@@ -82,7 +82,7 @@ async function persistTempWithJournal(result) {
 }
 
 async function getWeatherByZip(zip) {
-	const openWeatherUrl = `http://api.openweathermap.org/data/2.5/weather?zip=${zip}&units=imperial&appid=${apiKey}`
+	const openWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&units=imperial&appid=${apiKey}`
 	return await fetch(openWeatherUrl).then((res) => res.json())
 }
 
