@@ -31,7 +31,6 @@ function refreshJournal() {
 async function getJournal() {
 	const journalEntries = await fetch(weatherApiUrl).then((res) => res.json())
 
-	console.log('Getting Journal')
 	displayJournalEntries(journalEntries)
 	journalEntryStore.setItem(JOURNAL_ENTRIES, JSON.stringify(journalEntries))
 }
@@ -97,10 +96,7 @@ function displayJournalEntries(journalEntries) {
 		const liEntry = document.createElement('li')
 		const pEntry = document.createElement('p')
 		const { temperature, userResponse, date, name, weather } = journal
-		console.log(journal)
-		pEntry.innerHTML = `<span><b>${temperature}</b> in <b>${name}</b> on ${moment(
-			date
-		).format('MMM DD, YYYY hh:mm A')} with ${
+		pEntry.innerHTML = `<span><b>${temperature}</b> in <b>${name}</b> on ${moment(date).format('MMM DD, YYYY hh:mm A')} with ${
 			weather.length > 0 && weather[0].description
 		} </span>. ... ${userResponse}.`
 		liEntry.appendChild(pEntry)
