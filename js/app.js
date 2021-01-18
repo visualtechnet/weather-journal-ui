@@ -1,34 +1,104 @@
-const weatherApiUrl = 'http://localhost:9000/.netlify/functions/api'
+const weatherApiUrl = 'https://zen-wiles-e17b2d.netlify.app/.netlify/functions/api'
+const apiKey = '153da925919bca743649e4d361c0ed8e'
+const weatherIcon = 'http://openweathermap.org/img/wn/01d@2x.png'
+const journalEntryStore = window.localStorage
+const JOURNAL_ENTRIES = 'JOURNAL_ENTRIES'
+const refreshJournalInMS = 5000 //sec
 
 function loadJournal() {
-    console.log('Loading')
-    getJournal()
+	const journalStries = journalEntryStore.getItem(JOURNAL_ENTRIES)
+	const generate = document.querySelector('#generate')
+	if (journalStries !== null) {
+		displayJournalEntries(JSON.parse(journalStries))
+	} else {
+		getJournal()
+	}
+
+	generate.addEventListener('click', saveJournal)
+}
+
+function refreshJournal() {
+	journalEntryStore.removeItem(JOURNAL_ENTRIES)
+
+	getJournal()
 }
 
 async function getJournal() {
-    const journalEntries = await fetch(weatherApiUrl).then(res => res.json())
+	const journalEntries = await fetch(weatherApiUrl).then((res) => res.json())
 
-    displayJournalEntries(journalEntries)
+	console.log('Getting Journal')
+	displayJournalEntries(journalEntries)
+	journalEntryStore.setItem(JOURNAL_ENTRIES, JSON.stringify(journalEntries))
 }
 
-function saveJournal() {
+async function saveJournal(evt) {
+	const zip = document.querySelector('#zip')
+	await getWeatherByZip(zip.value)
+		.then(persistTempWithJournal)
+		.then((journal) => {
+			const journalStries = journalEntryStore.getItem(JOURNAL_ENTRIES)
+			const existingEntries =
+				(journalStries && JSON.parse(journalStries)) || []
+			const newEntries = [{ ...journal }]
 
+			const mergedEntries = [...existingEntries, ...newEntries]
+			journalEntryStore.setItem(
+				JOURNAL_ENTRIES,
+				JSON.stringify(mergedEntries)
+			)
+
+			displayJournalEntries(mergedEntries)
+		})
+		.catch((err) => {
+			alert(err)
+		})
+}
+
+async function persistTempWithJournal(result) {
+	const feelings = document.querySelector('#feelings')
+	const journalEntry = Object.assign({}, result, {
+		temperature: result && result.main.temp,
+		date: moment(),
+		userResponse: feelings.value
+	})
+	const journalResult = await fetch(weatherApiUrl, {
+		method: 'POST',
+		body: JSON.stringify(journalEntry),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then((result) => result.json())
+
+	return journalResult
+}
+
+async function getWeatherByZip(zip) {
+	const openWeatherUrl = `http://api.openweathermap.org/data/2.5/weather?zip=${zip}&units=imperial&appid=${apiKey}`
+	return await fetch(openWeatherUrl).then((res) => res.json())
 }
 
 function displayJournalEntries(journalEntries) {
-    const ulJournalEntries = document.querySelector('#journalEntries')
-    const journalFragment = new DocumentFragment()
+	const ulJournalEntries = document.querySelector('#journalEntries')
+	const journalFragment = new DocumentFragment()
 
-    for (const journal of journalEntries) {
-        const liEntry = document.createElement('li')
-        const pEntry = document.createElement('p')
-        const { temperature, userResponse, date } = journal
-        pEntry.innerHTML = `<span>${temperature} on ${moment(date).fromNow()}</span> -- <i>${userResponse}</i>`
-        liEntry.appendChild(pEntry)
-        journalFragment.appendChild(liEntry)
-    }
+	//clear any entries in list
+	ulJournalEntries.innerHTML = ''
 
-    ulJournalEntries.appendChild(journalFragment)
+	for (const journal of journalEntries) {
+		const liEntry = document.createElement('li')
+		const pEntry = document.createElement('p')
+		const { temperature, userResponse, date, name, weather } = journal
+		console.log(journal)
+		pEntry.innerHTML = `<span><b>${temperature}</b> in <b>${name}</b> on ${moment(
+			date
+		).format('MMM DD, YYYY hh:mm A')} with ${
+			weather.length > 0 && weather[0].description
+		} </span>. ... ${userResponse}.`
+		liEntry.appendChild(pEntry)
+		journalFragment.appendChild(liEntry)
+	}
+
+	ulJournalEntries.appendChild(journalFragment)
 }
 
 document.addEventListener('DOMContentLoaded', loadJournal)

@@ -34,4 +34,4 @@ http://localhost:8080
 
 Server and Client is hosted in netlify. Server uses netlify aws lambda functions
 
-- Client
+[https://gifted-montalcini-db32f9.netlify.app/](https://gifted-montalcini-db32f9.netlify.app/)
