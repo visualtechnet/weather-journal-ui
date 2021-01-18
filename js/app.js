@@ -3,7 +3,12 @@ const apiKey = '153da925919bca743649e4d361c0ed8e'
 const weatherIcon = 'http://openweathermap.org/img/wn/01d@2x.png'
 const journalEntryStore = window.localStorage
 const JOURNAL_ENTRIES = 'JOURNAL_ENTRIES'
-const refreshJournalInMS = 5000 //sec
+
+const sortByMostRecent = (a, b) => {
+    if (a.date < b.date) return 1
+    else if (a.date > b.date) return -1
+    else return 0
+}
 
 function loadJournal() {
 	const journalStries = journalEntryStore.getItem(JOURNAL_ENTRIES)
@@ -41,17 +46,21 @@ async function saveJournal(evt) {
 				(journalStries && JSON.parse(journalStries)) || []
 			const newEntries = [{ ...journal }]
 
-			const mergedEntries = [...existingEntries, ...newEntries]
+            const mergedEntries = [...existingEntries, ...newEntries]
+            const sortedEntries = mergedEntries.sort(sortByMostRecent)
 			journalEntryStore.setItem(
 				JOURNAL_ENTRIES,
-				JSON.stringify(mergedEntries)
+				JSON.stringify(sortedEntries)
 			)
 
-			displayJournalEntries(mergedEntries)
+			displayJournalEntries(sortedEntries)
 		})
 		.catch((err) => {
 			alert(err)
-		})
+        })
+
+    evt.preventDefault();
+    return false;
 }
 
 async function persistTempWithJournal(result) {

@@ -13,21 +13,23 @@
 <body>
     <div class="container">
         <h1>Weather Journal App by Mark Guerrero</h1>
-        <p>This app pulls weather information from OpenWeatherMap api using zip code provided in the textbox.
-            The list of journal entries is also kept in local storage to reduce calls to the Journal API. </p>
-        <form onsubmit="saveJournal();return false;">
+        <p>This app pulls weather information from OpenWeatherMap api using zip code provided in the textbox. The list
+            of journal entries is also kept in local storage to reduce calls to the Journal API. </p>
+        <section>
             <label for="zip">Enter ZipCode<br />
                 <input id="zip" name="zip" type="text" placeholder="Enter zip code here" class="form-control">
             </label><br />
             <label for="feelings">How are you feeling today?<br />
-                <textarea id="feelings" name="feelings" placeholder="Enter your feelings here" class="form-control" rows="50" cols="10" style="height:100px"></textarea>
+                <textarea id="feelings" name="feelings" placeholder="Enter your feelings here" class="form-control"
+                    rows="50" cols="10" style="height:100px"></textarea>
             </label><br />
-            <button id="generate" type="submit" class="btn btn-secondary">GENERATE</button>
-        </form>
+            <button id="generate" type="button" class="btn btn-secondary">GENERATE</button>
+        </section>
         <hr>
         <h2>Most Recent Entry</h2>
         <ul id="journalEntries"></ul><br />
-        <button type="submit" onclick="refreshJournal();return false;" class="btn btn-primary" style="max-width: 150px;">REFRESH</button>
+        <button type="submit" onclick="refreshJournal();return false;" class="btn btn-primary"
+            style="max-width: 150px;">REFRESH</button>
         <p> Using Open Weather API on this Website<br /> https://openweathermap.org/api </p>
         <footer>&copy;Copyright 2021. Mark Guerrero. All Rights Reserved.</footer>
     </div>
